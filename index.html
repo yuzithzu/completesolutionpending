@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMPLETE SOLUTION PHARMACY</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 10px;
+            background-color: #f4f4f4;
+        }
+        .form-container {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        button {
+            padding: 8px 12px;
+            margin: 5px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .action-buttons button {
+            background-color: #dc3545;
+        }
+        .action-buttons button:hover {
+            background-color: #c82333;
+        }
+        .highlight {
+            background-color: yellow;
+        }
+        .medicine-item {
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>COMPLETE SOLUTION PHARMACY</h2>
+
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="agency">Agency</label>
+    <select id="agency" name="agency" required>
+        <option value="" disabled selected>Select an Agency</option>
+        <option value="Office of the President">Office of the President</option>
+        <option value="Office of the Vice President">Office of the Vice President</option>
+        <option value="Dswd Ncr">DSWD NCR</option>
+        <option value="Dswd Batasan">DSWD Batasan</option>
+        <option value="Dswd Mimaropa">DSWD Mimaropa</option>
+        <option value="Baclaran Redemptorist Church">Baclaran Redemptorist Church</option>
+    </select>
+
+    <label for="gl-amount">GL Amount</label>
+    <input type="number" id="gl-amount" name="gl-amount" required>
+
+    <label for="gl-date-entry">GL Date Entry</label>
+    <input type="date" id="gl-date-entry" name="gl-date-entry" required>
+
+    <label for="gl-date-expiration">GL Date Expiration</label>
+    <input type="date" id="gl-date-expiration" name="gl-date-expiration" required>
+
+    <label for="medicine">Medicine</label>
+    <div id="medicine-list">
+        <div class="medicine-item">
+            <label>Generic Name</label>
+            <input type="text" placeholder="Generic Name" required>
+            <label>Brand Name</label>
+            <input type="text" placeholder="Brand Name" required>
+            <label>Quantity</label>
+            <input type="number" placeholder="Quantity" required>
+            <label>Unit of Measure (UOM)</label>
+            <select required>
+                <option value="" disabled selected>Select UOM</option>
+                <option value="Tabs">Tabs</option>
+                <option value="PFs">PFs</option>
+                <option value="Boxs">Boxs</option>
+                <option value="Vials">Vials</option>
+            </select>
+        </div>
+    </div>
+    <button type="button" onclick="addMedicine()">+ Add Medicine</button>
+
+    <label for="contact-number">Contact Number</label>
+    <input type="tel" id="contact-number" name="contact-number" required>
+
+    <label for="remarks">Remarks</label>
+    <textarea id="remarks" name="remarks" rows="3"></textarea>
+
+    <button type="button" onclick="addToTable()">Add to Table</button>
+
+    <table id="data-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Agency</th>
+                <th>GL Amount</th>
+                <th>GL Date Entry</th>
+                <th>GL Date Expiration</th>
+                <th>Medicine</th>
+                <th>Contact Number</th>
+                <th>Remarks</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        loadTable();
+    });
+
+    function addMedicine() {
+        const medicineDiv = document.createElement('div');
+        medicineDiv.classList.add('medicine-item');
+        medicineDiv.innerHTML = `
+            <label>Generic Name</label>
+            <input type="text" placeholder="Generic Name" required>
+            <label>Brand Name</label>
+            <input type="text" placeholder="Brand Name" required>
+            <label>Quantity</label>
+            <input type="number" placeholder="Quantity" required>
+            <label>Unit of Measure (UOM)</label>
+            <select required>
+                <option value="" disabled selected>Select UOM</option>
+                <option value="Tabs">Tabs</option>
+                <option value="PFs">PFs</option>
+                <option value="Boxs">Boxs</option>
+                <option value="Vials">Vials</option>
+            </select>`;
+        document.getElementById('medicine-list').appendChild(medicineDiv);
+    }
+
+    function addToTable() {
+        const name = document.getElementById('name').value;
+        const agency = document.getElementById('agency').value;
+        const glAmount = document.getElementById('gl-amount').value;
+        const glDateEntry = document.getElementById('gl-date-entry').value;
+        const glDateExpiration = document.getElementById('gl-date-expiration').value;
+        const contactNumber = document.getElementById('contact-number').value;
+        const remarks = document.getElementById('remarks').value;
+
+        let medicines = '';
+        document.querySelectorAll('#medicine-list .medicine-item').forEach(item => {
+            const genericName = item.querySelector('input[placeholder="Generic Name"]').value;
+            const brandName = item.querySelector('input[placeholder="Brand Name"]').value;
+            const quantity = item.querySelector('input[placeholder="Quantity"]').value;
+            const uom = item.querySelector('select').value;
+            medicines += `
+                <table style="width:100%; border: 1px solid #ddd;">
+                    <tr><td>Generic: ${genericName}</td><td>Brand: ${brandName}</td><td>Qty: ${quantity} ${uom}</td></tr>
+                    <tr><td colspan="3">
+                        <button onclick="updateQuantity(this, 1)">+</button>
+                        <button onclick="updateQuantity(this, -1)">−</button>
+                    </td></tr>
+                </table><br>`;
+        });
+
+        const table = document.getElementById('data-table').getElementsByTagName('tbody')[0];
+        const newRow = table.insertRow();
+
+        newRow.innerHTML = `
+            <td>${name}</td>
+            <td>${agency}</td>
+            <td>${glAmount}</td>
+            <td>${glDateEntry}</td>
+            <td>${glDateExpiration}</td>
+            <td>${medicines}</td>
+            <td>${contactNumber}</td>
+            <td>${remarks}</td>
+            <td class="action-buttons">
+                <button onclick="deleteRow(this)">Delete</button>
+                <button onclick="cancelRow(this)">Cancel</button>
+            </td>`;
+
+        saveTable();
+    }
+
+    function updateQuantity(button, change) {
+        const quantityText = button.closest('tr').querySelector('td:nth-child(3)');
+        let currentQty = parseInt(quantityText.textContent.match(/\d+/)[0]);
+        currentQty += change;
+        if (currentQty < 0) currentQty = 0; // Prevent negative quantity
+        quantityText.textContent = quantityText.textContent.replace(/\d+/, currentQty);
+        saveTable();
+    }
+
+    function deleteRow(button) {
+        const row = button.closest('tr');
+        row.remove();
+        saveTable();
+    }
+
+    function cancelRow(button) {
+        const row = button.closest('tr');
+        row.classList.toggle('highlight');
+    }
+
+    function saveTable() {
+        const table = document.getElementById('data-table').getElementsByTagName('tbody')[0];
+        const rows = table.getElementsByTagName('tr');
+        const tableData = [];
+        for (let row of rows) {
+            const rowData = {
+                name: row.cells[0].textContent,
+                agency: row.cells[1].textContent,
+                glAmount: row.cells[2].textContent,
+                glDateEntry: row.cells[3].textContent,
+                glDateExpiration: row.cells[4].textContent,
+                medicine: row.cells[5].innerHTML,
+                contactNumber: row.cells[6].textContent,
+                remarks: row.cells[7].textContent,
+            };
+            tableData.push(rowData);
+        }
+        localStorage.setItem('tableData', JSON.stringify(tableData));
+    }
+
+    function loadTable() {
+        const savedData = localStorage.getItem('tableData');
+        if (savedData) {
+            const tableData = JSON.parse(savedData);
+            const table = document.getElementById('data-table').getElementsByTagName('tbody')[0];
+            tableData.forEach(rowData => {
+                const newRow = table.insertRow();
+                newRow.innerHTML = `
+                    <td>${rowData.name}</td>
+                    <td>${rowData.agency}</td>
+                    <td>${rowData.glAmount}</td>
+                    <td>${rowData.glDateEntry}</td>
+                    <td>${rowData.glDateExpiration}</td>
+                    <td>${rowData.medicine}</td>
+                    <td>${rowData.contactNumber}</td>
+                    <td>${rowData.remarks}</td>
+                    <td class="action-buttons">
+                        <button onclick="deleteRow(this)">Delete</button>
+                        <button onclick="cancelRow(this)">Cancel</button>
+                    </td>`;
+            });
+        }
+    }
+</script>
+
+</body>
+</html>
