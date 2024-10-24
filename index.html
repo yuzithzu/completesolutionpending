@@ -110,7 +110,7 @@
             <label>Brand Name</label>
             <input type="text" placeholder="Brand Name" required>
             <label>Quantity</label>
-            <input type="number" placeholder="Quantity" required>
+            <input type="number" placeholder="Quantity" value="0" required>
             <label>Unit of Measure (UOM)</label>
             <select required>
                 <option value="" disabled selected>Select UOM</option>
@@ -164,7 +164,7 @@
             <label>Brand Name</label>
             <input type="text" placeholder="Brand Name" required>
             <label>Quantity</label>
-            <input type="number" placeholder="Quantity" required>
+            <input type="number" placeholder="Quantity" value="0" required>
             <label>Unit of Measure (UOM)</label>
             <select required>
                 <option value="" disabled selected>Select UOM</option>
@@ -189,11 +189,11 @@
         document.querySelectorAll('#medicine-list .medicine-item').forEach(item => {
             const genericName = item.querySelector('input[placeholder="Generic Name"]').value;
             const brandName = item.querySelector('input[placeholder="Brand Name"]').value;
-            const quantity = item.querySelector('input[placeholder="Quantity"]').value;
+            let quantity = item.querySelector('input[placeholder="Quantity"]').value;
             const uom = item.querySelector('select').value;
             medicines += `
                 <table style="width:100%; border: 1px solid #ddd;">
-                    <tr><td>Generic: ${genericName}</td><td>Brand: ${brandName}</td><td>Qty: ${quantity} ${uom}</td></tr>
+                    <tr><td>Generic: ${genericName}</td><td>Brand: ${brandName}</td><td>Qty: <span class="medicine-quantity">${quantity}</span> ${uom}</td></tr>
                     <tr><td colspan="3">
                         <button onclick="updateQuantity(this, 1)">+</button>
                         <button onclick="updateQuantity(this, -1)">−</button>
@@ -218,16 +218,17 @@
                 <button onclick="cancelRow(this)">Cancel</button>
             </td>`;
 
-        saveTable();
+        resetForm();  // Clear input fields after adding to the table
+        saveTable();  // Save table data to local storage
     }
 
     function updateQuantity(button, change) {
-        const quantityText = button.closest('tr').querySelector('td:nth-child(3)');
-        let currentQty = parseInt(quantityText.textContent.match(/\d+/)[0]);
+        const quantitySpan = button.closest('table').querySelector('.medicine-quantity');
+        let currentQty = parseInt(quantitySpan.textContent);
         currentQty += change;
-        if (currentQty < 0) currentQty = 0; // Prevent negative quantity
-        quantityText.textContent = quantityText.textContent.replace(/\d+/, currentQty);
-        saveTable();
+        if (currentQty < 0) currentQty = 0;
+        quantitySpan.textContent = currentQty;
+        saveTable(); // Save changes to local storage
     }
 
     function deleteRow(button) {
@@ -239,6 +240,33 @@
     function cancelRow(button) {
         const row = button.closest('tr');
         row.classList.toggle('highlight');
+    }
+
+    function resetForm() {
+        document.getElementById('name').value = '';
+        document.getElementById('agency').value = '';
+        document.getElementById('gl-amount').value = '';
+        document.getElementById('gl-date-entry').value = '';
+        document.getElementById('gl-date-expiration').value = '';
+        document.getElementById('contact-number').value = '';
+        document.getElementById('remarks').value = '';
+        document.getElementById('medicine-list').innerHTML = `
+            <div class="medicine-item">
+                <label>Generic Name</label>
+                <input type="text" placeholder="Generic Name" required>
+                <label>Brand Name</label>
+                <input type="text" placeholder="Brand Name" required>
+                <label>Quantity</label>
+                <input type="number" placeholder="Quantity" value="0" required>
+                <label>Unit of Measure (UOM)</label>
+                <select required>
+                    <option value="" disabled selected>Select UOM</option>
+                    <option value="Tabs">Tabs</option>
+                    <option value="PFs">PFs</option>
+                    <option value="Boxs">Boxs</option>
+                    <option value="Vials">Vials</option>
+                </select>
+            </div>`;
     }
 
     function saveTable() {
