@@ -153,6 +153,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -222,17 +223,17 @@
                 <button onclick="cancelRow(this)">Cancel</button>
             </td>`;
 
-        resetForm();  // Clear input fields after adding to the table
-        saveTable();  // Save table data to local storage
+        saveTable();
+        resetForm();
     }
 
     function updateQuantity(button, change) {
-        const quantitySpan = button.closest('table').querySelector('.medicine-quantity');
+        let quantitySpan = button.closest('table').querySelector('.medicine-quantity');
         let currentQty = parseInt(quantitySpan.textContent);
         currentQty += change;
         if (currentQty < 0) currentQty = 0;
         quantitySpan.textContent = currentQty;
-        saveTable(); // Save changes to local storage
+        saveTable();
     }
 
     function deleteRow(button) {
@@ -321,15 +322,19 @@
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
-        let tableContent = '';
-
-        // Extract table content
-        document.querySelectorAll('#data-table tbody tr').forEach(row => {
-            const cells = row.querySelectorAll('td');
-            tableContent += `Name: ${cells[0].textContent}\nAgency: ${cells[1].textContent}\nGL Amount: ${cells[2].textContent}\nGL Date Entry: ${cells[3].textContent}\nGL Date Expiration: ${cells[4].textContent}\nMedicine: ${cells[5].textContent}\nContact Number: ${cells[6].textContent}\nRemarks: ${cells[7].textContent}\n\n`;
+        doc.autoTable({
+            html: '#data-table', // This will use the content from the table with id 'data-table'
+            theme: 'grid',
+            styles: {
+                fontSize: 10,
+                cellPadding: 3
+            },
+            headStyles: {
+                fillColor: [100, 100, 255],
+                textColor: 255,
+            },
         });
 
-        doc.text(tableContent, 10, 10);
         doc.save('pharmacy_data.pdf');
     }
 </script>
