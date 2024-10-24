@@ -148,7 +148,11 @@
         <tbody>
         </tbody>
     </table>
+
+    <button onclick="exportPDF()">Export to PDF</button>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -311,6 +315,22 @@
                     </td>`;
             });
         }
+    }
+
+    function exportPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        let tableContent = '';
+
+        // Extract table content
+        document.querySelectorAll('#data-table tbody tr').forEach(row => {
+            const cells = row.querySelectorAll('td');
+            tableContent += `Name: ${cells[0].textContent}\nAgency: ${cells[1].textContent}\nGL Amount: ${cells[2].textContent}\nGL Date Entry: ${cells[3].textContent}\nGL Date Expiration: ${cells[4].textContent}\nMedicine: ${cells[5].textContent}\nContact Number: ${cells[6].textContent}\nRemarks: ${cells[7].textContent}\n\n`;
+        });
+
+        doc.text(tableContent, 10, 10);
+        doc.save('pharmacy_data.pdf');
     }
 </script>
 
